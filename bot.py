@@ -1,18 +1,21 @@
 import os
 
-from telegram import Bot
-from telegram.ext import CommandHandler, Updater
+from telegram import Update
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 
 TOKEN = os.environ.get("API_TOKEN")
 
 
-def start(update, context):
-    update.message.reply_text("Привет! Я бот!")
+# функция-обработчик команды
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("Привет! Я бот!")
 
 
-updater = Updater(TOKEN)
-dp = updater.dispatcher
-dp.add_handler(CommandHandler("start", start))
+# создаем приложение
+app = ApplicationBuilder().token(TOKEN).build()
 
-updater.start_polling()
-updater.idle()
+# добавляем обработчик команды
+app.add_handler(CommandHandler("start", start))
+
+# запускаем бота
+app.run_polling()
